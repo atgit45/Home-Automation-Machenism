@@ -1,0 +1,34 @@
+#include <Wire.h>
+char x;
+int out1 = 9;
+int val;
+void setup()
+{
+  Wire.begin(49);                // join i2c bus with address #4
+  Wire.onReceive(receiveEvent); // register event
+  Serial.begin(9600);// start serial for output
+  pinMode(12,OUTPUT);
+  pinMode(9,OUTPUT);
+  pinMode(10,OUTPUT);
+  pinMode(11,OUTPUT);
+  pinMode(13,OUTPUT);
+}
+
+// function that executes whenever data is received from master
+// this function is registered as an event, see setup()
+void receiveEvent(int howMany)
+{
+  x = Wire.read();      // receive byte as an integer
+  Serial.println(x);  // print the integer
+  if (x == '0') {digitalWrite(9,LOW); digitalWrite(10,LOW);digitalWrite(11,LOW);digitalWrite(12,LOW);digitalWrite(13,LOW); Serial.println("lights off"); val = 10;}
+  if (x == '1') {digitalWrite(9,HIGH);  Serial.println("light level is = 1"); val = 10;}
+  if (x == '2') {digitalWrite(9,HIGH); digitalWrite(10,HIGH);  Serial.println("light level is = 2"); val = 10;}
+  if (x == '3') {digitalWrite(9,HIGH); digitalWrite(10,HIGH);  digitalWrite(11,HIGH);  Serial.println("light level is = 3"); val = 10;}
+  if (x == '4') {digitalWrite(9,HIGH); digitalWrite(10,HIGH);  digitalWrite(11,HIGH);  digitalWrite(12,HIGH);  Serial.println("light level is = 4"); val = 10;}
+  if (x == '5') {digitalWrite(9,HIGH); digitalWrite(10,HIGH);  digitalWrite(11,HIGH);  digitalWrite(12,HIGH);  digitalWrite(13,HIGH);  Serial.println("light level is = 5"); val = 10;}
+}
+
+void loop()
+{
+  
+}
