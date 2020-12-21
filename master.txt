@@ -1,0 +1,46 @@
+#include <Wire.h>
+#include <Keypad.h>
+#include<LiquidCrystal.h>
+LiquidCrystal lcd(5, 4, 3, 2, A2, A3);
+const byte numRows= 4;
+const byte numCols= 4;
+char keymap[numRows][numCols]= { {'1', '2', '3', 'A'},{'4', '5', '6', 'B'},{'7', '8', '9', 'C'},{'*', '0', '#', 'D'} };
+byte rowPins[numRows] = {A0, A1, 11, 10};
+byte colPins[numCols]= {9,8,7,6};
+Keypad myKeypad= Keypad(makeKeymap(keymap), rowPins, colPins, numRows, numCols);
+
+void setup()
+{
+  lcd.begin(16,2);
+  Serial.begin(9600);
+  Wire.begin(4); 				// join i2c bus (address optional for master)
+  Wire.begin(9);
+  Wire.begin(1);          
+  
+}
+
+char x = 0;
+
+void loop()
+{
+  lcd.setCursor(0,0);
+  lcd.print("input   mode");
+  if (Serial.available() > 0) 
+  {
+    Serial.println("entered device mode");
+    x=Serial.read();
+    Serial.println(x);
+    lcd.setCursor(0,1);
+    if(x==49) { lcd.print("lights   mode"); delay(100); }
+    if(x==50) { lcd.print("fan      mode"); delay(100); }
+    if(x==51) { lcd.print("curtain  mode"); delay(100);}
+  }
+  char keypressed = myKeypad.getKey();
+  KeyState btn = myKeypad.getState();
+  Wire.beginTransmission(x); 	// transmit to device #4
+  if (keypressed != NO_KEY)
+  {
+    Wire.write(keypressed);    // sends one byte  
+    Wire.endTransmission();    // stop transmitting
+  }
+}
