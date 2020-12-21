@@ -1,0 +1,49 @@
+#include <Servo.h>
+#include <Wire.h>
+
+Servo servo_9;
+int angle=0;
+int sweep=0;
+char x;
+void setup()
+{
+  servo_9.attach(9);
+  Serial.begin(9600);
+  Wire.begin(51);                // join i2c bus with address #4
+  Wire.onReceive(receiveEvent); // register event
+  Serial.begin(9600);// start serial for output
+
+}
+
+void receiveEvent(int howMany)
+{
+  x = Wire.read();      // receive byte as an integer
+  Serial.println(x);
+  if(x== 48)
+  {
+    sweep=0;
+  }
+  if(x== 49)
+  {
+    sweep=45;
+  }
+  if(x== 50)
+  {
+    sweep=90;
+  }
+  if(x== 51)
+  {
+    sweep=135;
+  }
+  if(x== 52)
+  {
+    sweep=180;
+  }
+  for (angle=0;angle<=sweep;angle+=45)
+  {
+    servo_9.write(angle);
+  }
+}
+void loop()
+{
+}
